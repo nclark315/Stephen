@@ -5,13 +5,8 @@ public class PhonicsLevelManager : MonoBehaviour
 {
     public PhonicsGridManager gridManager;
 
-    private int currentLevel = 0;
-    private List<List<string>> levelData = new List<List<string>>()
-    {
-        new List<string>{"C", "A", "T", "X", "Y", "Z", "B", "O", "G"},
-        new List<string>{"D", "O", "G", "L", "M", "N", "P", "Q", "R"}
-        // Add more levels
-    };
+    [SerializeField] List<string> levelData = new List<string>();
+    [SerializeField] List<Sprite> objectImgs = new List<Sprite>();
 
     private void Start()
     {
@@ -20,10 +15,6 @@ public class PhonicsLevelManager : MonoBehaviour
 
     public void LoadNextLevel()
     {
-        if (currentLevel < levelData.Count)
-        {
-            gridManager.GenerateGrid(levelData[currentLevel]);
-            currentLevel++;
-        }
+            gridManager.GenerateGrid(levelData, objectImgs);
     }
 }

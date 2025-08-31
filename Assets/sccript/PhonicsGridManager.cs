@@ -11,22 +11,22 @@ public class PhonicsGridManager : MonoBehaviour
 
     public Transform gridParent;
 
-    public void GenerateGrid(List<string> letters)
+    public void GenerateGrid(List<string> letters, List<Sprite> imgs)
     {
         ClearGrid();
         currentLetters = letters;
 
         int index = 0;
-        for (int x = 0; x < gridSize; x++)
+        for (int x = gridSize-1; x >= 0; x--)
         {
-            for (int z = 0; z < gridSize; z++)
+            for (int z = gridSize-1; z >=0; z--)
             {
-                Vector3 pos = new Vector3(x *spacing, 0, z * spacing);
+                Vector3 pos = new Vector3(z*spacing, x*spacing, 0);
                 GameObject block = Instantiate(letterBlockPrefab);
                 block.transform.parent = gridParent;
                 block.transform.localPosition = pos;
                 block.name = "Block_" + letters[index];
-                block.GetComponent<LetterBlock>().SetLetter(letters[index]);
+                block.GetComponent<LetterBlock>().SetLetter(letters[index], imgs[index]);
                 index++;
             }
         }

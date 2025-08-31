@@ -82,4 +82,8 @@ public class MainMenuHandler : MonoBehaviour
     {
         SceneManager.LoadScene("PlayGround");
     }
+    public void OnClickChapter1()
+    {
+        SceneManager.LoadSceneAsync("Chapter1");
+    }
 }

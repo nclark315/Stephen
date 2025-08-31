@@ -159,6 +159,27 @@ public class LetterBlock : MonoBehaviour
         
 
     }
+
+    public void BringOnTop(Vector3 NewPos)
+    {
+        isMovingDone = false;
+        originalPosition = transform.localPosition;
+        targetPosition = NewPos;
+
+    }
+
+    public void BringBackToBottom()
+    {
+        isMovingDone = false;
+        targetPosition = originalPosition;
+        originalPosition = transform.localPosition;
+    }
+
+    public void SwapPos(Vector3 NewPos)
+    {
+        isMovingDone = false;
+        targetPosition = NewPos;
+    }
     public bool GetStatus()
     {
         return clickable;
@@ -179,6 +200,9 @@ public class LetterBlock : MonoBehaviour
 
         transform.position = originalPos;
     }
-
+     public void ResetRotationOfBlocks()
+    {
+        targetRotation = Quaternion.Euler(0, -87f, 0);
+    }
 
 }

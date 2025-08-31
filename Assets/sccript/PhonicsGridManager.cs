@@ -39,4 +39,12 @@ public class PhonicsGridManager : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
+
+    public void ResetRotationOfAllBlocks()
+    {
+        foreach (Transform child in gridParent)
+        {
+            child.gameObject.GetComponent<LetterBlock>().ResetRotationOfBlocks();
+        }
+    }
 }

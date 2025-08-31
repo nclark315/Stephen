@@ -38,6 +38,7 @@ public class VanMovement : MonoBehaviour
         yield return StartCoroutine(MoveForward(30f));
 
         isMoving = false;
+        VanMovementDone();
     }
 
     private IEnumerator MoveForward(float distance)
@@ -54,6 +55,7 @@ public class VanMovement : MonoBehaviour
 
             yield return null;
         }
+
     }
 
     private IEnumerator SmoothTurnRight(float angle)
@@ -89,5 +91,11 @@ public class VanMovement : MonoBehaviour
         {
             wheel.Rotate(Vector3.right, wheelSpinSpeed * Time.deltaTime, Space.Self);
         }
+    }
+
+    public void VanMovementDone()
+    {
+        Debug.Log("start convo again");
+        FindObjectOfType<Chapter1Mannager>().TaskDone();
     }
 }

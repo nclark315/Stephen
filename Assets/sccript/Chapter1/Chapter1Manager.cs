@@ -42,6 +42,7 @@ public class Chapter1Mannager : MonoBehaviour
 
     [SerializeField] InputManager inputManager;
     [SerializeField] Task1NameBirth taskNameBirth;
+    [SerializeField] PhonicsGridManager gridManager;
 
 
     private void Start()
@@ -167,7 +168,7 @@ public class Chapter1Mannager : MonoBehaviour
         {
             taskNameBirth.ShowTaskScreen();
         }
-        if (taskInd==1)
+        else if (taskInd==1)
         {
             if (lattersTaskInd == 0 || lattersTaskInd == 1)
             {
@@ -199,12 +200,21 @@ public class Chapter1Mannager : MonoBehaviour
             else if (lattersTaskInd == 16 || lattersTaskInd == 17)
                 inputManager.StartTask("i");
 
-           else if (lattersTaskInd >= 18)
+           else if (lattersTaskInd == 18)
             {
-                Debug.Log("task end");
                 FindObjectOfType<VanMovement>().StartVanMovement();
+                taskInd++;
             }
 
+        }
+
+        else if(taskInd==2)
+        {
+            if (lattersTaskInd >= 19)
+            {
+                Debug.Log("check");
+                FindObjectOfType<Chapter1JoinManager>().StartNewLine();
+            }
         }
         
     }
@@ -220,13 +230,19 @@ public class Chapter1Mannager : MonoBehaviour
         }
         else if(taskInd==1)
         {
-            Debug.Log(lattersTaskInd+"task end" + chatInd);
             lattersTaskInd++;
             
             
                 StartDialogue();
                 chatInd++;
             
+        }
+        else if (taskInd==2)
+        {
+            lattersTaskInd++;
+            chatInd++;
+            gridManager.ResetRotationOfAllBlocks();
+            StartDialogue();
         }
     }
     

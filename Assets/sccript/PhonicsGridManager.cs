@@ -27,6 +27,7 @@ public class PhonicsGridManager : MonoBehaviour
                 block.transform.localPosition = pos;
                 block.name = "Block_" + letters[index];
                 block.GetComponent<LetterBlock>().SetLetter(letters[index], imgs[index]);
+                block.GetComponent<LetterBlock>().SetValuesAuto();
                 index++;
             }
         }

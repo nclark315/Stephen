@@ -7,10 +7,10 @@ using System.Collections;
 public class LetterBlock : MonoBehaviour
 {
     public string letter;
-    private bool isSelected = false;
-    private bool isMovingDone = false;
-    private bool isRotating = false;
-    private bool rotationStarted = false;
+    [SerializeField] private bool isSelected = false;
+    [SerializeField] private bool isMovingDone = false;
+    [SerializeField] private bool isRotating = false;
+    [SerializeField] private bool rotationStarted = false;
 
 
     private float hoverAmplitude = 0.2f;
@@ -42,25 +42,62 @@ public class LetterBlock : MonoBehaviour
     private Vector3 originalScale;
     private Vector3 originalPosition;
     private Quaternion originalRotation;
-    bool clickable = true;
+    [SerializeField] bool clickable = true;
 
 
-    void Start()
-    {
-        originalScale = transform.localScale;
-        originalPosition = transform.localPosition;
-        originalRotation = transform.localRotation;
-    }
+   
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        originalScale = transform.localScale;
 
         // Auto-assign renderer if not set
         if (rend == null)
             rend = GetComponent<Renderer>();
     }
+    public void SetValuesAuto()
+    {
+        originalScale = transform.localScale;
+        originalPosition = transform.localPosition;
+        originalRotation = transform.localRotation;
+    }
+    public void SetValueCustom(Vector3 scale, Quaternion rot, Vector3 pos)
+    {
+        isMovingDone = true;
+        originalScale = scale;
+        originalPosition = pos;
+        originalRotation = rot;
+    }
 
+    public void SetTargetValues(Vector3 scale, Quaternion rot, Vector3 pos)
+    {
+        targetScale =  scale;
+        targetPosition =  pos;
+        targetRotation = rot;
+    }
+    public Vector3 GetScale()
+    {
+        return originalScale;
+    }
+    public Vector3 GetPos()
+    {
+        return originalPosition;
+    }
+    public Quaternion GetRot()
+    {
+        return targetRotation;
+    }
+    public Vector3 GetTScale()
+    {
+        return targetScale;
+    }
+    public Vector3 GetTPos()
+    {
+        return targetPosition;
+    }
+    public Quaternion GetTRot()
+    {
+        return originalRotation;
+    }
     public void SetLetter(string l, Sprite blockImg)
     {
         letter = l.ToUpper();

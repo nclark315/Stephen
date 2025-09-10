@@ -43,6 +43,9 @@ public class Chapter1Mannager : MonoBehaviour
     [SerializeField] InputManager inputManager;
     [SerializeField] Task1NameBirth taskNameBirth;
     [SerializeField] PhonicsGridManager gridManager;
+    [SerializeField] CameraController cameraCcontroler;
+
+
 
 
     private void Start()
@@ -83,6 +86,9 @@ public class Chapter1Mannager : MonoBehaviour
 
         currentTextfield.text = "";
         currentDialogueBox.SetActive(true);
+
+        if(cameraCcontroler.gameObject.activeInHierarchy)
+        cameraCcontroler.LookAtTarget(currentDialogueBox.transform);
 
         foreach (char c in line.ToCharArray())
         {
@@ -153,6 +159,8 @@ public class Chapter1Mannager : MonoBehaviour
         TextMeshPro currentTextfield = eachActor[eachChat[chatInd].eachDialogue[currentLineIndex-1].actorInd].dialogueTextField;
         GameObject currentDialogueBox = eachActor[eachChat[chatInd].eachDialogue[currentLineIndex-1].actorInd].actorDialogBox;
 
+        if (cameraCcontroler.gameObject.activeInHierarchy)
+            cameraCcontroler.GoBack();
 
         currentTextfield.text = "";
         nextButton.gameObject.SetActive(false);
@@ -272,6 +280,7 @@ public class Dialogue
 public class ActorDetail
 {
     public string actorName;
+    public Transform actor;
     public GameObject actorDialogBox;
     [Header("UI References")]
     public TextMeshPro dialogueTextField;

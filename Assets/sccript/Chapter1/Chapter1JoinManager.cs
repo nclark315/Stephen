@@ -6,6 +6,7 @@ using TMPro;
 public class Chapter1JoinManager : MonoBehaviour
 {
     [SerializeField] ActorDetail[] eachActor;  //1 kitten, 2 for puppy , 3 for robbot
+    [SerializeField] Transform actorsParent;
 
     [SerializeField] Transform blocksParent;
     [SerializeField] List<GameObject> currentBlocks = new List<GameObject>();
@@ -29,65 +30,118 @@ public class Chapter1JoinManager : MonoBehaviour
 
     IEnumerator StartAnim()
     {
-        int waitCount = 0;
+        int waitCount = -1;
         int latterCount = -1;
         newList.Clear();
         StartTypingAndAudioClip();
 
-        yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
-        //remove latter from top which are not used  in  this word
-        foreach(GameObject eachBlock in currentBlocks)
+       // yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+        if (eachJoining[currentInd].joiningNeeded)
         {
-            string topLatter = eachBlock.GetComponent<LetterBlock>().letter.ToLower();
-            if (!eachJoining[currentInd].word.Contains(topLatter))
+
+            //remove latter from top which are not used  in  this word
+            foreach (GameObject eachBlock in currentBlocks)
             {
-                eachBlock.GetComponent<LetterBlock>().BringBackToBottom();
+                string topLatter = eachBlock.GetComponent<LetterBlock>().letter.ToLower();
+                if (!eachJoining[currentInd].word.Contains(topLatter))
+                {
+                    eachBlock.GetComponent<LetterBlock>().BringBackToBottom();
+                }
             }
+            waitCount++;
+            //add blocks to current blocks list
+            foreach (char eachLatter in eachJoining[currentInd].word)
+            {
+                yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+                waitCount++;
+
+                latterCount++;
+                GameObject go = new GameObject();
+                go = null;
+                string currentLatter = eachLatter.ToString().ToLower();
+                if (eachJoining[currentInd].isLastword && latterCount == eachJoining[currentInd].word.Length - 1)
+                {
+                    Debug.Log(currentLatter + " last");
+                    go = Instantiate(newList[newList.Count - 1]);
+                    go.transform.parent = newList[newList.Count - 1].transform.parent;
+
+                    Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].topPos[latterCount];
+
+                    go.gameObject.GetComponent<LetterBlock>().SetValueCustom(newList[newList.Count - 1].GetComponent<LetterBlock>().GetScale(),
+                        newList[newList.Count - 1].GetComponent<LetterBlock>().GetRot(),
+                        newList[newList.Count - 1].GetComponent<LetterBlock>().GetPos());
+
+                    go.gameObject.GetComponent<LetterBlock>().SetTargetValues(newList[newList.Count - 1].GetComponent<LetterBlock>().GetTScale(),
+                        newList[newList.Count - 1].GetComponent<LetterBlock>().GetTRot(),
+                        newList[newList.Count - 1].GetComponent<LetterBlock>().GetTPos());
+
+                    go.transform.localPosition = newPos;
+                    go.transform.localRotation = newList[newList.Count - 1].transform.localRotation;
+
+                    
+                    newList.Add(go);
+                   // go.GetComponent<LetterBlock>().BringOnTop(newPos);
+
+                }
+
+                else
+                {
+                        go = CheckAlreadyThere(currentLatter);
+                    if (go != null)
+                    {
+                        newList.Add(go);
+                        Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].topPos[latterCount];
+                        go.GetComponent<LetterBlock>().SwapPos(newPos);
+                    }
+                    else
+                    {
+
+                        go = GetFromBottom(currentLatter);
+                        newList.Add(go);
+                        Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].topPos[latterCount];
+                        go.GetComponent<LetterBlock>().BringOnTop(newPos);
+                    }
+                }
+            }
+
+
+            //fill  new  list  on current blocks  array
+            currentBlocks.Clear();
+            yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+            FillNewListInCurrentList();
+            waitCount++;
+            yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+
+            //join now words
+            latterCount = -1;
+            foreach (GameObject blocks in currentBlocks)
+            {
+                latterCount++;
+                Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].joiningPos[latterCount];
+                blocks.GetComponent<LetterBlock>().SwapPos(newPos);
+            }
+            waitCount++;
+            yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+
         }
-        waitCount++;
-        yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
-        //add first block to current  block
-        foreach (char eachLatter in eachJoining[currentInd].word)
+        else
         {
-            latterCount++;
-            string currentLatter = eachLatter.ToString().ToLower();
-            GameObject go =  CheckAlreadyThere(currentLatter);
-            if(go!=null)
-            {
-                newList.Add(go);
-                Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].topPos[latterCount];
-                go.GetComponent<LetterBlock>().SwapPos(newPos);
-            }
-            else
-            {
-                
-                go = GetFromBottom(currentLatter);
-                newList.Add(go);
-                Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].topPos[latterCount];
-                go.GetComponent<LetterBlock>().BringOnTop(newPos);
-            }
+            waitCount++;
+            yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
         }
-
-        waitCount++;
-
-        //fill  new  list  on current blocks  array
-        currentBlocks.Clear();
-        yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
-        FillNewListInCurrentList();
-        yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
-
-        //join now words
-        latterCount = -1;
-        foreach(GameObject blocks in currentBlocks)
-        {
-            latterCount++;
-            Vector3 newPos = topPosition[eachJoining[currentInd].word.Length - 2].joiningPos[latterCount];
-            blocks.GetComponent<LetterBlock>().SwapPos(newPos);
-        }
-        waitCount++;
-        yield return new WaitForSeconds(eachJoining[currentInd].waitTimers[waitCount]);
+        
 
         EndAnim();
+    }
+
+    public void PlayAnimationLast()
+    {
+        actorsParent.GetComponent<Animator>().SetTrigger("run");
+
+        foreach(ActorDetail actor in eachActor)
+        {
+            actor.actor.gameObject.GetComponent<Animator>().SetTrigger("run");
+        }
     }
     public void FillNewListInCurrentList()
     {
@@ -130,6 +184,14 @@ public class Chapter1JoinManager : MonoBehaviour
         if(currentInd!=0)
             eachActor[eachJoining[currentInd-1].actorInd].actorDialogBox.SetActive(false);
 
+
+        if (eachJoining[currentInd].clip != null)
+        {
+            AudioClip currentDialogueClip = eachJoining[currentInd].clip;
+            audioSource.clip = currentDialogueClip;
+            audioSource.Play();
+        }
+
         eachActor[eachJoining[currentInd].actorInd].actorDialogBox.SetActive(true);
         eachActor[eachJoining[currentInd].actorInd].dialogueTextField.text = eachJoining[currentInd].typleLine;
     }
@@ -140,17 +202,23 @@ public class Chapter1JoinManager : MonoBehaviour
         {
             StartNewLine();
         }
-        else
-            Debug.Log("game end")
+        else {
+            Debug.Log("game end");
+            PlayAnimationLast();
+                }
 ;    }
 }
 [System.Serializable]
 public class Joining
 {
+    [Header("Dialogue Settings")]
+    [TextArea(3, 10)]
     public string typleLine;
+    
     public AudioClip clip;
     public int actorInd;
     public bool joiningNeeded;
+    public bool isLastword = false;
     public string word;
     public float[] waitTimers;
 }
